@@ -7,6 +7,7 @@ import 'firebase/firestore';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { doc } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -37,4 +38,32 @@ const servers = {
 }
 
 let pc = new RTCPeerConnection(servers);
+let localStream = null;
+let remoteStream = null;
 
+const webcamButtom = document.getElementById('webcamButton');
+const webcamVideo = document.getElementById('webcamVideo');
+const callButtom = document.getElementById('callButton');
+const callInput = document.getElementById('callInput');
+const answerButton = document.getElementById('answerButton');
+const remoteVideo = document.getElementById('remoteVideo');
+const hangupButton = document.getElementById('hangupButton');
+
+// setting yp Media soruces: 
+
+webcamButtom.onclick = async () => {
+  localStream = await navigator.mediaDevices.getUserMedia({video:true, audio: true});
+
+  remoteStream=new MediaStream();
+  localStream.getTracks().forEach((track) =>{
+    pc.addTrack(track, localStream);
+  });
+
+  pc.ontrack = event=> {
+    event.streams[0].getTracks().forEach(track =>{
+      remoteStream.addTrack(track);
+    });
+  };
+  webcamVideo.srcObject = localStream;
+  remoteVideo.srcObject = remoteStream
+};
