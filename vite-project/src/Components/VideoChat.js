@@ -1,6 +1,4 @@
-import './style.css';
-
-import firebase from 'firebase/app';
+import '/resources/styles/style.css';
 import 'firebase/firestore';
 
 // Import the functions you need from the SDKs you need
